@@ -1175,8 +1175,8 @@ Examples:
 
     """ % (sys.argv[0], sys.argv[0], sys.argv[0]))
 
-if __name__ == "__main__":
 
+def main():
     conf = {
             'port': 'auto',
             'baud': 500000,
