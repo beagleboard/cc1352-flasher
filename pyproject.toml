@@ -7,7 +7,10 @@ name="cc1352_flasher"
 version="0.0.1"
 description="Script to communicate with Texas Instruments CC13xx/CC2538/CC26xx Serial Boot Loader"
 readme="README.md"
-authors=[{ name = "Jason Kridner", email = "jkridner@beagleboard.org" }]
+authors=[
+  { name = "Jason Kridner", email = "jkridner@beagleboard.org" },
+  { name = "Jelmer Tiete", email = "jelmer@tiete.be" }
+]
 license = { file = "LICENSE.md" }
 classifiers=[
     "Development Status :: 5 - Production/Stable",
