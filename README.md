@@ -1,10 +1,10 @@
 Before finalizing this fork, this commit needs to include moving to git.beagleboard.org CI.
 
 
-TI CC13xx/CC2538/CC26xx Serial Boot Loader [![Build Status](https://travis-ci.org/JelmerT/cc2538-bsl.svg?branch=master)](https://travis-ci.org/JelmerT/cc2538-bsl)
+CC1352 flasher for BeaglePlay and BeagleConnect Freedom [![Build Status](https://openbeagle.org/beagleconnect/cc1352-flasher/badges/main/pipeline.svg)](https://openbeagle.org/beagleconnect/cc1352-flasher)
 ==========================================
 
-This folder contains a python script that communicates with the boot loader of the Texas Instruments CC2538, CC26xx and CC13xx SoCs (System on Chips).
+This folder contains a python script that communicates with the boot loader of the Texas Instruments CC13xx SoCs (System on Chips) on BeaglePlay or BeagleConnect Freedom.
 It can be used to erase, program, verify and read the flash of those SoCs with a simple USB to serial converter.
 
 ### Requirements
@@ -13,9 +13,9 @@ To run this script you need a Python interpreter, Linux and Mac users should be 
 
 Alternatively, Docker can be used to run this script as a one-liner without the need to install dependencies, see [git-developer/ti-cc-tool](https://github.com/git-developer/ti-cc-tool) for details.
 
-To communicate with the uart port of the SoC you need a usb to serial converter:
-* If you use the SmartRF06 board with an Evaluation Module (EM) mounted on it you can use the on-board ftdi chip. Make sure the "Enable UART" jumper is set on the board. You can have a look [here][contiki cc2538dk] for more info on drivers for this chip on different operating systems.
-* If you use a different platform, there are many cheap USB to UART converters available, but make sure you use one with 3.3v voltage levels.
+BeaglePlay provides the required GPIO and UART connections between the AM62 and CC1352 to enable programming using the CC1352 serial BSL.
+
+BeagleConnect Freedom provides a USB to serial bridge to the CC1352 to enable programming using the CC1352 serial BSL.
 
 ### Dependencies
 
@@ -28,25 +28,15 @@ The script will try to auto-detect whether your firmware is a raw binary or an I
 
 If python-magic is _not_ installed, the script will try to auto-detect the firmware type by looking at the filename extension, but this is sub-optimal. If the extension is `.hex`, `.ihx` or `.ihex`, the script will assume that the firmware is an Intel Hex file. In all other cases, the firmware will be treated as raw binary.
 
-### CC2538
+### BeagleConnect Freedom
 
-Once you connected the SoC you need to make sure the serial boot loader is enabled. A chip without a valid image (program), as it comes from the factory, will automatically start the boot loader. After you upload an image to the chip, the "Image Valid" bits are set to 0 to indicate that a valid image is present in flash. On the next reset the boot loader won't be started and the image is immediately executed.   
-To make sure you don't get "locked out", i.e. not being able to communicate over serial with the boot loader in the SoC anymore, you need to enable the boot loader backdoor in your image (the script currently only checks this on firmware for the 512K model). When the boot loader backdoor is enabled the boot loader will be started when the chip is reset and a specific pin of the SoC is pulled high or low (configurable).   
-The boot loader backdoor can be enabled and configured with the 8-bit boot loader backdoor field in the CCA area in flash. If you set this field to 0xF3FFFFFF the boot loader will be enabled when pin PA3 is pulled low during boot. This translates to holding down the `select` button on the SmartRF06 board while pushing the `EM reset` button.
-If you did lock yourself out or there is already an image flashed on your SoC, you will need a jtag programmer to erase the image. This will reset the image valid bits and enable the boot loader on the next reset. The SmartRF06EB contains both a jtag programmer and a USB to uart converter on board.
+The MSP430 USB-to-UART bridge in [BeagleConnect Freedom] uses a serial [BREAK](https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter#Break_condition) to know when to invoke the CC1352P7 BSL. Use `--bootloader-send-break` to activate the bootloader.
 
-### CC26xx and CC13xx
+### BeaglePlay
 
-The script has been tested with SmartRF06EB + CC2650 EM. The physical wiring on the CC2650 Sensortag does not meet the ROM bootloader's requirements in terms of serial interface configuration. For that reason, interacting with the Sensortag via this script is (and will remain) impossible.
+The GPIOs on [BeaglePlay] are toggled using the `gpiod` library and found via the device tree provided labels. Use `--play` to select these gpios and the proper UART.
 
-For sensortags CC1350STK:
-It is possible to solder cables to R21 and R22 for flashing using the Serial Bootloader. This [issue] has instructions about flashing the CC1350STK sensortag.
-
-For ITead SONOFF Zigbee 3.0 USB Dongle Plus:
-For the CC2652P based "SONOFF Zigbee 3.0 USB Dongle Plus" (model "ZBDongle-P") adapter from ITead you need to invoke toggle to activate bootloader with `--bootloader-sonoff-usb` if you do not want to open its enclosure to manually start the bootloader with the boot button on the PCB.
-
-For BeagleConnect Freedom:
-The MSP430 USB-to-UART bridge in [BeagleConnect Freedom](https://beagleconnect.org) uses a serial [BREAK](https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter#Break_condition) to know when to invoke the CC1352P7 BSL. Use `--bootloader-send-break` to activate the bootloader.
+### Other notes
 
 For all the CC13xx and CC26xx families, the ROM bootloader is configured through the `BL_CONFIG` 'register' in CCFG. `BOOTLOADER_ENABLE` should be set to `0xC5` to enable the bootloader in the first place.
 
@@ -72,26 +62,22 @@ These settings are very useful for development, but enabling failure analysis in
 
 ### Usage
 
-The script will automatically select the first serial looking port from a USB to uart converter in `/dev` (OSX, Linux) for uploading. Be careful as on the SmartRF06B board under Linux this might be the jtag interface as apposed to the uart interface. In this case select the correct serial port manually with the `-p` option. Serial port selection under Windows needs testing.
+Install from PyPi using `pip install cc1352-flasher` or using the local repo using `pip install .`.
 
-Before uploading your image make sure you start the boot loader on the SoC (`select` + `reset` on CC2538DK).
-You can find more info on the different options by executing `python cc2538-bsl.py -h`.
+You can find info on the various options by executing `cc1352-flasher -h`.
 
 ### Remarks
 
-* Programming multiple SoCs at the same time is not yet supported.
-* Reading the full flash of a 512K chip takes a really long time, use the length option to only read what you're interested in for now.
-
-If you found a bug or improved some part of the code, please submit an issue or pull request.
+If you found a bug or improved some part of the code, please submit an [issue] or pull request.
 
 ##### Authors
-BeagleBoard.org (c) 2023, <discuss@beagleboard.org>
+Jason Kridner, BeagleBoard.org (c) 2023, <jkridner@beagleboard.org>
 Jelmer Tiete (c) 2014, <jelmer@tiete.be>   
 Loosly based on [stm32loader] by Ivan A-R <ivan@tuxotronic.org>   
 
-[![Analytics](https://ga-beacon.appspot.com/UA-3496907-10/JelmerT/cc2538-bsl?pixel)](https://github.com/igrigorik/ga-beacon)
-
+[BeagleConnect Freedom]: https://beagleconnect.org "BeagleConnect Freedom"
+[BeaglePlay]: https://beagleplay.org "BeaglePlay"
 [python]: http://www.python.org/download/ "Python Download"
 [contiki cc2538dk]: https://github.com/contiki-os/contiki/tree/master/platform/cc2538dk "Contiki CC2538DK readme"
 [stm32loader]: https://github.com/jsnyder/stm32loader "stm32loader"
-[issue]: https://github.com/JelmerT/cc2538-bsl/issues/78 "issue"
+[issue]: https://openbeagle.org/beagleconnect/cc1352-flasher/issues "issue"

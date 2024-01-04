@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name="cc1352_flasher"
-version="0.0.1"
-description="Script to communicate with Texas Instruments CC13xx/CC2538/CC26xx Serial Boot Loader"
+version="3.0a5"
+description="Script flash CC1352 on BeaglePlay or BeagleConnect Freedom"
 readme="README.md"
 authors=[
   { name = "Jason Kridner", email = "jkridner@beagleboard.org" },
