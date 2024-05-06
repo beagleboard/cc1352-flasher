@@ -1176,6 +1176,13 @@ Examples:
     """ % (sys.argv[0], sys.argv[0], sys.argv[0]))
 
 
+def should_append(p):
+    if os.path.isdir(p):
+        return "/zephyr/zephyr.bin"
+    else:
+        return ""
+
+
 def main():
     conf = {
             'port': 'auto',
@@ -1273,7 +1280,7 @@ def main():
             conf['erase'] = 1
             conf['write'] = 1
             conf['verify'] = 1
-            conf['append'] = '/zephyr/zephyr.bin'
+            conf['append'] = should_append(args[0])
             conf['bootloader_send_break'] = True
         elif o == '--play':
             conf['erase'] = 1
@@ -1281,7 +1288,7 @@ def main():
             conf['verify'] = 1
             conf['bootloader_gpio'] = 'auto'
             conf['port'] = '/dev/play/cc1352/uart'
-            conf['append'] = '/zephyr/zephyr.bin'
+            conf['append'] = should_append(args[0])
         elif o == '--version':
             print_version()
             sys.exit(0)
