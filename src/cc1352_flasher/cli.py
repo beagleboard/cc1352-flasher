@@ -1494,3 +1494,7 @@ def main():
         if QUIET >= 10:
             traceback.print_exc()
         exit('ERROR: %s' % str(err))
+
+
+if __name__ == "__main__":
+    main()
