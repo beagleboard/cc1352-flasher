@@ -1,0 +1,14 @@
+{
+  "name": "tool-cc1352-flasher",
+  "version": "3.0a6",
+  "description": "Script flash CC1352 on BeaglePlay or BeagleConnect Freedom",
+  "keywords": [
+    "tools",
+    "uploader"
+  ],
+  "license": "BSD 3-Clause License",
+  "repository": {
+    "type": "git",
+    "url": "https://openbeagle.org/beagleconnect/cc1352-flasher"
+  }
+}
