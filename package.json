@@ -1,7 +1,7 @@
 {
   "name": "tool-cc1352-flasher",
   "version": "3.0a6",
-  "description": "Script flash CC1352 on BeaglePlay or BeagleConnect Freedom",
+  "description": "Tool to flash CC1352 on BeaglePlay or BeagleConnect Freedom",
   "keywords": [
     "tools",
     "uploader"
