@@ -16,3 +16,5 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *,cover
+/.venv
+/src/cc1352_flasher.egg-info
