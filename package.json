@@ -6,7 +6,7 @@
     "tools",
     "uploader"
   ],
-  "license": "BSD 3-Clause License",
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "https://openbeagle.org/beagleconnect/cc1352-flasher"
