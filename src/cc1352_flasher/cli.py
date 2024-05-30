@@ -148,7 +148,7 @@ class FirmwareFile(object):
             if file_type == 'text/plain':
                 firmware_is_hex = True
                 mdebug(5, "Firmware file: Intel Hex")
-            elif file_type == 'application/octet-stream' or file_type == 'application/x-dosexec':
+            elif file_type in ('application/octet-stream', 'application/x-dosexec', 'application/x-object'):
                 mdebug(5, "Firmware file: Raw Binary")
             else:
                 error_str = "Could not determine firmware type. Magic " \
