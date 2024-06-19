@@ -73,7 +73,7 @@ except ImportError:
     have_gpiod = False
 
 # version
-__version__ = "3.0a6"
+__version__ = "3.0a7"
 
 # Verbose level
 QUIET = 5

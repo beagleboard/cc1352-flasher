@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name="cc1352_flasher"
-version="3.0a6"
+version="3.0a7"
 description="Script flash CC1352 on BeaglePlay or BeagleConnect Freedom"
 readme="README.md"
 authors=[
